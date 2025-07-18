@@ -136,7 +136,7 @@ export default function BlogdetailPage() {
     }, [id]);
 
     useEffect(() => {
-        const socket = new SockJS("https://localhost:8443/ws");
+        const socket = new SockJS("https://192.168.40.26:8443/ws");
         const client = Stomp.over(socket);
     
         setConnectionStatus('connecting');
