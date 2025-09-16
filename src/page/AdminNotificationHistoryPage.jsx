@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {Table, Card, Typography, Tag, Space, Input, Modal, Button, Tooltip, message} from 'antd';
+import {Table, Card, Typography, Tag, Space, Input, Modal, Button, Tooltip, message, App} from 'antd';
 import { SearchOutlined, InfoCircleOutlined, EyeOutlined } from '@ant-design/icons';
 import CustomLayout from "../components/layout/customlayout";
 import { getAdminNotifications } from '../service/NotificationService';
@@ -13,6 +13,7 @@ const AdminNotificationHistoryPage = () => {
   const [searchText, setSearchText] = useState('');
   const [detailModalVisible, setDetailModalVisible] = useState(false);
   const [selectedNotification, setSelectedNotification] = useState(null);
+  const { message, modal } = App.useApp();
 
   useEffect(() => {
     fetchNotifications();

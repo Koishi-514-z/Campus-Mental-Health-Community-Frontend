@@ -1,5 +1,20 @@
+
 import React, { useState, useEffect } from 'react';
-import { Tabs, Table, Button, message, Typography, Space, Tag, Select, Input, Modal, Card, Tooltip, Dropdown } from 'antd';
+import {
+    Tabs,
+    Table,
+    Button,
+    Typography,
+    Space,
+    Tag,
+    Select,
+    Input,
+    Modal,
+    Card,
+    Tooltip,
+    Dropdown,
+    App
+} from 'antd';
 import { getIllegalBlogs, getIllegalReplies, deleteBlog, deleteReply, handleApproveBlog, handleApproveReply } from '../service/community';
 import { useNavigate } from 'react-router-dom';
 import CustomLayout from "../components/layout/customlayout";
@@ -9,7 +24,6 @@ import { SearchOutlined, ExclamationCircleOutlined, InfoCircleOutlined, MoreOutl
 const { Title } = Typography;
 const { TabPane } = Tabs;
 const { Option } = Select;
-const { confirm } = Modal;
 
 const AdminReviewPage = () => {
     const [illegalBlogs, setIllegalBlogs] = useState([]);
@@ -18,8 +32,8 @@ const AdminReviewPage = () => {
     const [statusFilter, setStatusFilter] = useState('0'); // 默认显示待审核
     const [searchText, setSearchText] = useState('');
     const navigate = useNavigate();
-    const [update , setUpdate] = useState(false);
-    const [open, setOpen] = useState(false);
+    const [update, setUpdate] = useState(false);
+    const { message, modal } = App.useApp();
 
     const fetchData = async () => {
         setLoading(true);
@@ -41,77 +55,66 @@ const AdminReviewPage = () => {
         fetchData();
     }, [update]);
 
-    const handleDelete = async (blogId, illegalId, title,type,userid) => {
-        if(type === 'blog'){
-            await handleDeleteBlog(blogId, illegalId, title, userid);
-        }else{
-            await handleDeleteReply(blogId, illegalId, userid);
+    const handleDelete = async (contentId, illegalId, title, type, userid) => {
+        if (type === 'blog') {
+            await handleDeleteBlog(contentId, illegalId, title, userid);
+        } else {
+            await handleDeleteReply(contentId, illegalId, userid);
         }
     };
 
-    const handleApprove = async (illegalId,type) => {
-        if(type === 'blog'){
-            await handleApproveBlog(illegalId);
-            setUpdate(!update);
-        }else{
-            await handleApproveReply(illegalId);
-            setUpdate(!update);
+    const handleApprove = async (illegalId, type) => {
+        try {
+            if (type === 'blog') {
+                await handleApproveBlog(illegalId);
+            } else {
+                await handleApproveReply(illegalId);
+            }
+            message.success('操作成功');
+            setUpdate(prev => !prev);
+        } catch (error) {
+            message.error('操作失败：' + error.message);
         }
     };
 
     const handleDeleteBlog = async (blogId, illegalId, title, userid) => {
-        // confirm({
-        //     title: '确认屏蔽帖子',
-        //     icon: <ExclamationCircleOutlined />,
-        //     content: `确定要屏蔽标题为"${title}"的帖子吗？`,
-        //     okText: '确认屏蔽',
-        //     okType: 'danger',
-        //     cancelText: '取消',
-        //     onOk: async () => {
+        modal.confirm({
+            title: '确认屏蔽帖子',
+            icon: <ExclamationCircleOutlined />,
+            content: `确定要屏蔽标题为"${title}"的帖子吗？`,
+            okText: '确认屏蔽',
+            okType: 'danger',
+            cancelText: '取消',
+            onOk: async () => {
                 try {
-                    await deleteBlog(blogId, illegalId,userid);
+                    await deleteBlog(blogId, illegalId, userid);
                     message.success('帖子已屏蔽');
-                    setUpdate(!update);
-                    //await fetchData();
+                    setUpdate(prev => !prev);
                 } catch (error) {
                     message.error('屏蔽失败：' + error.message);
                 }
-
-        //});
-        //setOpen(true);
-
-
+            }
+        });
     };
 
     const handleDeleteReply = async (replyId, illegalId, userid) => {
-        // try {
-        //     await deleteReply(replyId, illegalId);
-        //     message.success('回复已屏蔽');
-        //     setUpdate(!update);
-        //     //await fetchData();
-        // } catch (error) {
-        //     message.error('屏蔽失败：' + error.message);
-        // }
-
-        // confirm({
-        //     title: '确认屏蔽回复',
-        //     icon: <ExclamationCircleOutlined />,
-        //     content: `确定要屏蔽该回复吗？`,
-        //     okText: '确认屏蔽',
-        //     okType: 'danger',
-        //     cancelText: '取消',
-        //     onOk: async () => {
+        modal.confirm({
+            title: '确认屏蔽回复',
+            icon: <ExclamationCircleOutlined />,
+            content: `确定要屏蔽该回复吗？`,
+            okText: '确认屏蔽',
+            okType: 'danger',
+            cancelText: '取消',
+            onOk: async () => {
                 try {
                     await deleteReply(replyId, illegalId, userid);
                     message.success('回复已屏蔽');
-                    setUpdate(!update);
-                    //await fetchData();
+                    setUpdate(prev => !prev);
                 } catch (error) {
                     message.error('屏蔽失败：' + error.message);
                 }
-
-        //     }
-        // });
+            }
+        });
     };
 
     const formatTimestamp = (timestamp) => {
@@ -134,13 +137,15 @@ const AdminReviewPage = () => {
     };
 
     const filterData = (data) => {
+        const search = searchText.trim().toLowerCase();
+        if (!search) return data;
+
         return data.filter(item =>
-            item.userid.toLowerCase().includes(searchText.toLowerCase()) ||
-            item.content.toLowerCase().includes(searchText.toLowerCase()) ||
-            (item.title && item.title.toLowerCase().includes(searchText.toLowerCase()))
+            (item.userid && item.userid.toLowerCase().includes(search)) ||
+            (item.content && item.content.toLowerCase().includes(search)) ||
+            (item.title && item.title.toLowerCase().includes(search))
         );
     };
-
 
     const getActionMenu = (record, type) => ({
         items: [
@@ -152,13 +157,13 @@ const AdminReviewPage = () => {
             {
                 key: 'view-content',
                 label: type === 'blog' ? '查看帖子' : '查看原帖',
-                onClick: () => navigate(`/admin/blog/${record.blogid}`)
+                onClick: () => navigate(`/blog/${record.blogid}`)
             },
             ...(record.status === 0 ? [
                 {
                     key: 'block',
                     label: <span style={{ color: '#ff4d4f' }}>屏蔽</span>,
-                    onClick: () => handleDelete(record.contentid, record.illegalid, record.title, type,record.userid)
+                    onClick: () => handleDelete(record.contentid, record.illegalid, record.title, type, record.userid)
                 },
                 {
                     key: 'approve',
@@ -175,7 +180,8 @@ const AdminReviewPage = () => {
                 maxWidth: 200,
                 whiteSpace: 'nowrap',
                 overflow: 'hidden',
-                textOverflow: 'ellipsis'
+                textOverflow: 'ellipsis',
+                cursor: 'pointer'
             }}>
                 {text}
             </div>
@@ -204,7 +210,14 @@ const AdminReviewPage = () => {
             dataIndex: 'title',
             key: 'title',
             width: 200,
-            render: renderContentWithTooltip
+            render: (text, record) => (
+                <div
+                    onClick={() => navigate(`/blog/${record.blogid}`)}
+                    style={{ cursor: 'pointer' }}
+                >
+                    {renderContentWithTooltip(text)}
+                </div>
+            )
         },
         {
             title: '发帖人',
@@ -237,7 +250,7 @@ const AdminReviewPage = () => {
                             <Button
                                 size="small"
                                 danger
-                                onClick={() => handleDelete(record.contentid, record.illegalid, record.title,  'blog',record.userid)}
+                                onClick={() => handleDelete(record.contentid, record.illegalid, record.title, 'blog', record.userid)}
                             >
                                 屏蔽
                             </Button>
@@ -284,12 +297,11 @@ const AdminReviewPage = () => {
             width: 160,
             sorter: (a, b) => moment(a.timestamp).unix() - moment(b.timestamp).unix()
         },
-
         {
             title: '回复人',
             dataIndex: 'userid',
             key: 'userid',
-            width: 180,
+            width: 150,
             render: (text) => (
                 <Tag color="blue" style={{ cursor: 'pointer' }}
                      onClick={() => navigate(`/admin/user/${text}`)}>
@@ -301,7 +313,7 @@ const AdminReviewPage = () => {
             title: '违规原因',
             dataIndex: 'reason',
             key: 'reason',
-            width: 70,
+            width: 100,
             render: (text) => <Tag color="red">{text}</Tag>
         },
         {
@@ -309,7 +321,14 @@ const AdminReviewPage = () => {
             dataIndex: 'content',
             key: 'content',
             width: 200,
-            render: renderContentWithTooltip
+            render: (text, record) => (
+                <div
+                    onClick={() => navigate(`/blog/${record.blogid}`)}
+                    style={{ cursor: 'pointer' }}
+                >
+                    {renderContentWithTooltip(text)}
+                </div>
+            )
         },
         {
             title: '操作',
@@ -323,7 +342,7 @@ const AdminReviewPage = () => {
                             <Button
                                 size="small"
                                 danger
-                                onClick={() => handleDelete(record.contentid, record.illegalid, record.title, 'reply',record.userid)}
+                                onClick={() => handleDelete(record.contentid, record.illegalid, null, 'reply', record.userid)}
                             >
                                 屏蔽
                             </Button>
@@ -367,12 +386,13 @@ const AdminReviewPage = () => {
                             <Input
                                 placeholder="搜索用户ID/标题/内容"
                                 prefix={<SearchOutlined />}
+                                value={searchText}
                                 onChange={e => setSearchText(e.target.value)}
                                 style={{ width: 300 }}
                                 allowClear
                             />
                             <Select
-                                defaultValue="0"
+                                value={statusFilter}
                                 style={{ width: 120 }}
                                 onChange={setStatusFilter}
                             >
@@ -401,15 +421,10 @@ const AdminReviewPage = () => {
                             <Table
                                 columns={blogColumns}
                                 dataSource={filterData(filterByStatus(illegalBlogs))}
-                                rowKey="contentid"
+                                rowKey="illegalid"
                                 loading={loading}
                                 scroll={{ x: 900 }}
-                                pagination={{
-                                    showSizeChanger: true,
-                                    showQuickJumper: true,
-                                    showTotal: total => `共 ${total} 条记录`,
-                                    pageSizeOptions: ['10', '20', '50']
-                                }}
+                                pagination={false}  // 移除分页功能
                             />
                         </TabPane>
                         <TabPane
@@ -429,15 +444,10 @@ const AdminReviewPage = () => {
                             <Table
                                 columns={replyColumns}
                                 dataSource={filterData(filterByStatus(illegalReplies))}
-                                rowKey="contentid"
+                                rowKey="illegalid"
                                 loading={loading}
                                 scroll={{ x: 1200 }}
-                                pagination={{
-                                    showSizeChanger: true,
-                                    showQuickJumper: true,
-                                    showTotal: total => `共 ${total} 条记录`,
-                                    pageSizeOptions: ['10', '20', '50']
-                                }}
+                                pagination={false}  // 移除分页功能
                             />
                         </TabPane>
                     </Tabs>

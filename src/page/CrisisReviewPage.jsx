@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Tabs, Table, Button, message, Typography, Space, Tag, Input, Modal, Dropdown, Select, Card } from 'antd';
+import { Tabs, Table, Button, message, Typography, Space, Tag, Input, Modal, Dropdown, Select, Card, App } from 'antd';
 import { getAuditingCrisis, getAllConfirmedCrisis, confirmCrisis, deleteCrisis } from '../service/crisis';
 import { useNavigate } from 'react-router-dom';
 import CustomLayout from "../components/layout/customlayout";
@@ -23,6 +23,7 @@ const CrisisReviewPage = () => {
     const [urgencyFilter, setUrgencyFilter] = useState('all');
     const navigate = useNavigate();
     const [update, setUpdate] = useState(false);
+    const { message, modal } = App.useApp();
 
     const fetchData = async () => {
         setLoading(true);

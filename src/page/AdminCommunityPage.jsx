@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {Card, Table, Space, Input, Select, Typography, Tag, Button, Tooltip, message} from "antd";
+import {Card, Table, Space, Input, Select, Typography, Tag, Button, Tooltip, message, App} from "antd";
 import { SearchOutlined, InfoCircleOutlined, UserOutlined, LikeOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import CustomLayout from "../components/layout/customlayout";
@@ -20,6 +20,7 @@ const AdminCommunityPage = () => {
   const [total, setTotal] = useState(0);
   const navigate = useNavigate();
   const [update, setUpdate] = useState(false);
+  const { message, modal } = App.useApp();
 
   useEffect(() => {
     const fetchBlogs = async () => {

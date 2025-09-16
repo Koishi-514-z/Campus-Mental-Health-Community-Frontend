@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Table, Tabs, Typography, Tag, Button, message, Tooltip, Space, Modal, Form, Select, Input } from 'antd';
+import { Card, Table, Tabs, Typography, Tag, Button, message, Tooltip, Space, Modal, Form, Select, Input, App } from 'antd';
 import { useParams, useNavigate } from 'react-router-dom';
 import { adminGetBlogById, getUserBlogs, getUserReplies } from '../service/community';
 import { sendNotification } from '../service/NotificationService';
@@ -36,6 +36,7 @@ const AdminUserDetailPage = () => {
     const [titles, setTitles] = useState([]);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [form] = Form.useForm();
+    const { message, modal } = App.useApp();
 
     useEffect(() => {
         const fetchUserData = async () => {

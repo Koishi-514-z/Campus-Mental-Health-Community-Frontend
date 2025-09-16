@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Table, Button, message, Typography, Tag, Space, Card, Input, Tooltip, Modal, Form, Select } from 'antd';
+import { Table, Button, message, Typography, Tag, Space, Card, Input, Tooltip, Modal, Form, Select, App } from 'antd';
 import { SearchOutlined, UserOutlined, InfoCircleOutlined, NotificationOutlined, SoundOutlined } from '@ant-design/icons';
 import { getAllUsers, updateUserPriority } from '../service/AdminService';
 import { sendNotification } from '../service/NotificationService';
@@ -24,6 +24,7 @@ const AdminPage = () => {
   const [update, setUpdate] = useState(false);
   const [isAnnouncementModalVisible, setIsAnnouncementModalVisible] = useState(false);
   const [form] = Form.useForm();
+  const { message, modal } = App.useApp();
 
   useEffect(() => {
     const fetchUsers = async () => {

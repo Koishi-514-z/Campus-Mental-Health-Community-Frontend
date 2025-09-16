@@ -126,7 +126,8 @@ export default function CounselingView({counseling, fetchCounseling}) {
                         #{id}
                     </Text>
                 </div>
-            )
+            ),
+            sorter: (a, b) => a.counselingid - b.counselingid
         },
         {
             title: '预约时间',

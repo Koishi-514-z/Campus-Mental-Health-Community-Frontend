@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Button, message, Typography, Space, Card, Input, Modal, Form, Select, Tooltip, Tag } from 'antd';
+import { Table, Button, message, Typography, Space, Card, Input, Modal, Form, Select, Tooltip, Tag, App } from 'antd';
 import { ArrowLeftOutlined, SearchOutlined } from '@ant-design/icons';
 import { getAllUsers } from '../service/AdminService';
 import { sendNotification } from '../service/NotificationService';
@@ -41,6 +41,7 @@ const AdminNotificationPage = () => {
   const [roleFilter, setRoleFilter] = useState('all');
   const [form] = Form.useForm();
   const navigate = useNavigate();
+  const { message, modal } = App.useApp();
 
   useEffect(() => {
     const fetchUsers = async () => {

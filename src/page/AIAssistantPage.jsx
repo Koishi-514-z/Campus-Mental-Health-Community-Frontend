@@ -12,11 +12,13 @@ import ParticleBackground from '../components/layout/particlebackground';
 import { placeCallBackRequest } from '../service/counseling';
 import { getNotification } from '../service/notification';
 import { useNotification } from '../components/context/notificationcontext';
+import { useProfile } from '../components/context/profilecontext';
 
 const { TextArea } = Input;
 const { Title, Paragraph } = Typography;
 
 export default function AIAssistantPage() {
+    const { profile } = useProfile();
     const { message } = App.useApp();
     const [AIsessions, setAIsessions] = useState([]);
     const [messages, setMessages] = useState([]);
@@ -26,12 +28,13 @@ export default function AIAssistantPage() {
     const [sidebarVisible, setSidebarVisible] = useState(false);
     const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
     const [isTablet, setIsTablet] = useState(window.innerWidth >= 768 && window.innerWidth < 1024);
-    const alertShownRef = useRef(false); 
     const {sessionid} = useParams();                 
     const [searchParams] = useSearchParams();         
     const activeTab = searchParams.get('activeTab');
     const navigate = useNavigate();
     const { setPrivateNotifications, setPublicNotifications } = useNotification();
+
+    const userid = profile ? profile.userid : 'defaultUser';
 
     const fetchNotification = async () => {
         const fetched_notification = await getNotification();
@@ -73,7 +76,7 @@ export default function AIAssistantPage() {
         }
         const newAIsessions = [newAIsession, ...oldAIsessions];
         setAIsessions(newAIsessions);
-        localStorage.setItem((activeTab === 'hearing' ? 'AIsessions_hearing' : 'AIsessions_acting'), JSON.stringify(newAIsessions));
+        localStorage.setItem((activeTab === 'hearing' ? userid + 'AIsessions_hearing' : userid + 'AIsessions_acting'), JSON.stringify(newAIsessions));
         return id;
     }
 
@@ -92,7 +95,7 @@ export default function AIAssistantPage() {
             }
         }));
         setAIsessions(newAIsessions);
-        localStorage.setItem((activeTab === 'hearing' ? 'AIsessions_hearing' : 'AIsessions_acting'), JSON.stringify(newAIsessions));
+        localStorage.setItem((activeTab === 'hearing' ? userid + 'AIsessions_hearing' : userid + 'AIsessions_acting'), JSON.stringify(newAIsessions));
     }
 
     const deleteAIsession = (id) => {
@@ -104,7 +107,7 @@ export default function AIAssistantPage() {
         else {
             newid = newAIsessions[0].sessionid;
             setAIsessions(newAIsessions);
-            localStorage.setItem((activeTab === 'hearing' ? 'AIsessions_hearing' : 'AIsessions_acting'), JSON.stringify(newAIsessions));
+            localStorage.setItem((activeTab === 'hearing' ? userid + 'AIsessions_hearing' : userid + 'AIsessions_acting'), JSON.stringify(newAIsessions));
         }
         if(id === sessionid) {
             navigate(`/AIassistant/${newid}?activeTab=${activeTab}`);
@@ -113,7 +116,7 @@ export default function AIAssistantPage() {
 
     useEffect(() => {
         const today = new Date().toISOString().split('T')[0];
-        const storageKey = `usage_${today}`;
+        const storageKey = userid + `usage_${today}`;
         if(!localStorage.getItem(storageKey)) {
             localStorage.setItem(storageKey, '0');
         }
@@ -132,14 +135,29 @@ export default function AIAssistantPage() {
     }, []);
 
     useEffect(() => {
-        const handleOveruse = async () => {
-            if(usageSeconds >= 3600 && !alertShownRef.current) {
-                const res = await placeCallBackRequest();
-                if(!res) {
-                    message.error('ERROR');
+        const now = new Date();
+
+        const place = async () => {
+            const res = await placeCallBackRequest();
+            if(!res) {
+                message.error('ERROR');
+            }
+            fetchNotification();
+            localStorage.setItem('overuse_' + userid, JSON.stringify(now.getTime()));
+        }
+
+        const handleOveruse = () => {
+            if(usageSeconds >= 3600) {
+                const storage = localStorage.getItem('overuse_' + userid);
+                if(!storage) {
+                    place();
                 }
-                alertShownRef.current = true;
-                fetchNotification();
+                const history = new Date(parseInt(storage));
+                const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                const historyDate = new Date(history.getFullYear(), history.getMonth(), history.getDate());
+                if(today.getTime() !== historyDate.getTime()) {
+                    place();
+                }
             }
         };
         handleOveruse();
@@ -152,10 +170,10 @@ export default function AIAssistantPage() {
         }
         let datas;
         if(activeTab === 'hearing') {
-            datas = JSON.parse(localStorage.getItem('AIsessions_hearing'));
+            datas = JSON.parse(localStorage.getItem(userid + 'AIsessions_hearing'));
         }
         else {
-            datas = JSON.parse(localStorage.getItem('AIsessions_acting'));
+            datas = JSON.parse(localStorage.getItem(userid + 'AIsessions_acting'));
         }
         if(!datas || datas.length === 0) {
             const id = createAIsession([]);

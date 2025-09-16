@@ -181,7 +181,8 @@ export default function MyCousnelingCard({counseling, psyProfiles, setPsyProfile
                         #{id}
                     </Text>
                 </div>
-            )
+            ),
+            sorter: (a, b) => a.counselingid - b.counselingid
         },
         {
             title: '咨询师',

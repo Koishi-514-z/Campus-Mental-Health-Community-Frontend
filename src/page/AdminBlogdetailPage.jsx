@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {Card, Button, Typography, Space, Tag, message, Tooltip, Modal, Divider, Avatar, Pagination} from 'antd';
+import {Card, Button, Typography, Space, Tag, message, Tooltip, Modal, Divider, Avatar, Pagination, App} from 'antd';
 import { useParams, useNavigate } from 'react-router-dom';
 import {adminGetBlogById, deleteBlog, deleteReply, getRepliesForBlog} from '../service/community';
 import CustomLayout from "../components/layout/customlayout";
@@ -19,6 +19,7 @@ const AdminBlogDetailPage = () => {
     const [allReplies, setAllReplies] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize, setPageSize] = useState(10);
+    const { message, modal } = App.useApp();
 
     useEffect(() => {
         const fetchBlog = async () => {

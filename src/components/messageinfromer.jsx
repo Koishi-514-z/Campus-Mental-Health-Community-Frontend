@@ -25,7 +25,7 @@ export default function MessageInfromer({role}) {
             navigate(`/home?tabKey=${7}`);
         }
         else if(role === 1) {
-            navigate(`/admin/home?tabKey=${7}`);
+            navigate(`/admin/history`);
         }
         else if(role === 2) {
             navigate(`/psy/home?tabKey=${7}`);

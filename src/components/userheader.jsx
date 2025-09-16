@@ -62,11 +62,11 @@ export default function UserHeader({profile}) {
         else if(profile.role === 1) {
             switch (key) {
                 case 'profile': {
-                    navigate(`/admin/home?tabKey=${1}`);
+                    navigate(`/admin/usermanagement`);
                     break;
                 }
                 case 'settings': {
-                    navigate(`/admin/home?tabKey=${3}`);
+                    navigate(`/admin/usermanagement`);
                     break;
                 }
                 case 'logout': {

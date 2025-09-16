@@ -160,6 +160,7 @@ export default function HomePage() {
                 const now = new Date();
                 if(!storage) {
                     setIsModelOpen(true);
+                    return;
                 }
                 const history = new Date(parseInt(storage));
                 const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());

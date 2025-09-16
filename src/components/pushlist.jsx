@@ -159,7 +159,7 @@ export default function PushList({urlDatas, inhome, pageIndex, setPageIndex, pag
                                             </a>
                                         </div>
 
-                                        {data.tags.length > 0 && (
+                                        {data.tags && data.tags.length > 0 && (
                                             <div style={{ marginBottom: '4px' }}>
                                                 <Space size={4} wrap>
                                                     <TagOutlined style={{ 
@@ -184,7 +184,7 @@ export default function PushList({urlDatas, inhome, pageIndex, setPageIndex, pag
                                                             {tag.content}
                                                         </Tag>
                                                     ))}
-                                                    {data.tags.length > 3 && (
+                                                    {data.tags && data.tags.length > 3 && (
                                                         <Tag 
                                                             style={{
                                                                 background: 'rgba(140, 140, 140, 0.1)',
