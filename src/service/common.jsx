@@ -1,24 +1,18 @@
-const isError = (code) => {
-    if(code === 500 || code === 404 || code === 403 || code === 401) {
-        return true;
-    }
-    return false;
-}
-
 export async function getJson(url) {
     let res = await fetch(url, { method: "GET", credentials: "include" });
-    let res_json = await res.json();
-    if(isError(res_json.code)) {
+    let statusCode = res.status; 
+    if(statusCode === 401 || statusCode === 403) {
         window.location.href = '/forbidden';
         return null;
     }
+    let res_json = await res.json();
     return res_json;
 }
 
 export async function get(url) {
     let res = await fetch(url, { method: "GET", credentials: "include" });
-    let res_json = await res.json();
-    if(isError(res_json.code)) {
+    let statusCode = res.status; 
+    if(statusCode === 401 || statusCode === 403) {
         window.location.href = '/forbidden';
         return null;
     }
@@ -35,11 +29,12 @@ export async function put(url, data) {
         credentials: "include"
     };
     let res = await fetch(url, opts);
-    let res_json = await res.json();
-    if(isError(res_json.code)) {
+    let statusCode = res.status; 
+    if(statusCode === 401 || statusCode === 403) {
         window.location.href = '/forbidden';
         return null;
     }
+    let res_json = await res.json();
     return res_json;
 }
 
@@ -53,11 +48,12 @@ export async function del(url, data) {
         credentials: "include"
     };
     let res = await fetch(url, opts);
-    let res_json = await res.json();
-    if(isError(res_json.code)) {
+    let statusCode = res.status; 
+    if(statusCode === 401 || statusCode === 403) {
         window.location.href = '/forbidden';
         return null;
     }
+    let res_json = await res.json();
     return res_json;
 }
 
@@ -72,11 +68,12 @@ export async function post(url, data) {
         credentials: "include"
     };
     let res = await fetch(url, opts);
-    let res_json = await res.json();
-    if(isError(res_json.code)) {
+    let statusCode = res.status; 
+    if(statusCode === 401 || statusCode === 403) {
         window.location.href = '/forbidden';
         return null;
     }
+    let res_json = await res.json();
     return res_json;
 }
 
@@ -95,5 +92,4 @@ export async function readFile(file) {
 
 // export const BASEURL = 'http://localhost:8080';
 export const BASEURL = 'https://localhost:8443';
-// export const BASEURL = 'https://192.168.40.26:8443';
 export const PREFIX = `${BASEURL}/api`;
