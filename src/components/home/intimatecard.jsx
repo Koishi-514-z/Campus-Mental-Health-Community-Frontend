@@ -46,7 +46,7 @@ export default function IntimateCard({ intimateUsers }) {
         return (
             <Card 
                 hoverable={true}
-                onClick={() => navigate(`/home/${data.intimateProfile.userid}`)}
+                onClick={() => navigate(`/space/${data.intimateProfile.userid}`)}
                 style={{ 
                     borderRadius: '12px',
                     transition: 'all 0.3s ease',

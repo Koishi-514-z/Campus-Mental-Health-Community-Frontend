@@ -15,6 +15,7 @@ import SessionStatus from "../components/chat/sessionstatus";
 import { getUserProfile } from "../service/user";
 import Loading from "../components/loading";
 import { useProfile } from "../components/context/profilecontext";
+import { BASEURL } from "../service/common";
 
 export default function ChatPage() {
     const { profile, setProfile } = useProfile();
@@ -77,7 +78,7 @@ export default function ChatPage() {
     }, [profile]);
 
     useEffect(() => {
-        const socket = new SockJS("https://192.168.40.26:8443/ws");
+        const socket = new SockJS(BASEURL + "/ws");
         const client = Stomp.over(socket);
         
         setConnectionStatus('connecting');

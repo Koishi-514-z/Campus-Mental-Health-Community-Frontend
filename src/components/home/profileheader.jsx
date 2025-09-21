@@ -7,7 +7,7 @@ import { getSessionid, createSession } from "../../service/chat";
 
 const { Title, Text } = Typography;
 
-export default function ProfileHeader({profile, id}) {
+export default function ProfileHeader({profile, isVisitor}) {
     const [searchParams, setSearchParams] = useSearchParams();
     const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
     const navigate = useNavigate();
@@ -32,13 +32,13 @@ export default function ProfileHeader({profile, id}) {
     }
 
     const handleClick = async () => {
-        if(!id) {
+        if(!isVisitor) {
             navigate(`/chat`);
             return;
         }   
-        let sessionid = await getSessionid(id);
+        let sessionid = await getSessionid(profile?.userid);
         if(!sessionid) {
-            sessionid = await createSession(id);
+            sessionid = await createSession(profile?.userid);
             if(!sessionid) {
                 message.error('创建会话失败，请检查网络');
                 return;
@@ -168,7 +168,7 @@ export default function ProfileHeader({profile, id}) {
                             聊天
                         </Button>
                         
-                        {!id && (
+                        {!isVisitor && (
                             <>
                                 <Button 
                                     icon={<RobotOutlined />} 
@@ -206,7 +206,7 @@ export default function ProfileHeader({profile, id}) {
                         paddingTop: '16px',
                         marginTop: isMobile ? '16px' : '8px'
                     }}>
-                        <HomeTabs id={id} />
+                        <HomeTabs isVisitor={isVisitor} />
                     </div>
                 </Col>
             </Row>

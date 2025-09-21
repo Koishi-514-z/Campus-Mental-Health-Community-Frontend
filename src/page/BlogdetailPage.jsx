@@ -29,6 +29,7 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import SockJS from "sockjs-client";
 import { Stomp } from "@stomp/stompjs";
+import { BASEURL } from "../service/common";
 
 
 dayjs.extend(relativeTime);
@@ -136,7 +137,7 @@ export default function BlogdetailPage() {
     }, [id]);
 
     useEffect(() => {
-        const socket = new SockJS("https://192.168.40.26:8443/ws");
+        const socket = new SockJS(BASEURL + "/ws");
         const client = Stomp.over(socket);
     
         setConnectionStatus('connecting');
@@ -346,7 +347,7 @@ export default function BlogdetailPage() {
                             src={blog.user.avatar}
                             size={48}
                             className="user-avatar"
-                            onClick={() => navigate(`/home/${blog.user.userid}`)}
+                            onClick={() => navigate(`/space/${blog.user.userid}`)}
                         />
                         <div className="user-info">
                             <Title level={4} className="username">{blog.user.username}</Title>
@@ -406,7 +407,7 @@ export default function BlogdetailPage() {
                                         src={reply?.user?.avatar}
                                         size={36}
                                         className="reply-avatar"
-                                        onClick={() => navigate(`/home/${reply?.user?.userid}`)}
+                                        onClick={() => navigate(`/space/${reply?.user?.userid}`)}
                                     />
                                     <div className="reply-user-info">
                                         <Text strong className="reply-username">{reply?.user?.username}</Text>

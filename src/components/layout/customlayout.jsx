@@ -12,6 +12,7 @@ import SockJS from "sockjs-client";
 import { Stomp } from "@stomp/stompjs";
 import { useNotification } from "../context/notificationcontext";
 import { getNotification } from "../../service/notification";
+import { BASEURL } from "../../service/common";   
 
 const { Header, Content, Sider, Footer } = Layout;
 const { Title, Text } = Typography;
@@ -64,7 +65,7 @@ export default function CustomLayout({content}) {
     }, [profile]);
 
     useEffect(() => {
-        const socket = new SockJS("https://192.168.40.26:8443/ws");
+        const socket = new SockJS(BASEURL + "/ws");
         const client = Stomp.over(socket);
         
         setConnectionStatus('connecting');

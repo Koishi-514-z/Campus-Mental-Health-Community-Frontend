@@ -23,6 +23,7 @@ import CounselingPage from "../page/CounselingPage";
 import CounselingDetailPage from "../page/CounselingDetailPage";
 import AdminNotificationPage from "../page/AdminNotificationPage";
 import AdminNotificationHistoryPage from "../page/AdminNotificationHistoryPage";
+import VisitorPage from "../page/VisitorPage";
 
 export default function AppRouter() {
     return (
@@ -32,7 +33,7 @@ export default function AppRouter() {
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/register" element={<RegisterPage />} />
                 <Route path="/home" element={<HomePage />} />
-                <Route path="/home/:userid" element={<HomePage />} />
+                <Route path="/space/:userid" element={<VisitorPage />} />
                 <Route path="/chat" element={<ChatPage />} />
                 <Route path="/chat/:sessionid" element={<ChatPage />} />
                 <Route path="/emotion" element={<EmotionPage />} />

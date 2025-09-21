@@ -3,7 +3,7 @@ import { Tabs, Tooltip } from "antd";
 import { UserOutlined, FileTextOutlined, SettingOutlined, HeartOutlined, BarChartOutlined } from "@ant-design/icons";
 import { useParams, useSearchParams } from "react-router-dom";
 
-export default function HomeTabs({id}) {
+export default function HomeTabs({isVisitor}) {
     const [searchParams, setSearchParams] = useSearchParams();
     const { userid } = useParams();
     const tabKey = parseInt(searchParams.get('tabKey'));
@@ -21,7 +21,7 @@ export default function HomeTabs({id}) {
                     个人中心
                 </span>
             ),
-            disabled: id
+            disabled: isVisitor
         },
         {
             key: 2,
@@ -40,7 +40,7 @@ export default function HomeTabs({id}) {
                     成长轨迹
                 </span>
             ),
-            disabled: id
+            disabled: isVisitor
         },
         {
             key: 7,
@@ -50,7 +50,7 @@ export default function HomeTabs({id}) {
                     我的通知
                 </span>
             ),
-            disabled: id
+            disabled: isVisitor
         },
         {
             key: 3,
@@ -60,7 +60,7 @@ export default function HomeTabs({id}) {
                     账户设置
                 </span>
             ),
-            disabled: id
+            disabled: isVisitor
         }
     ];
 
